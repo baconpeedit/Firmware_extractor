@@ -91,7 +91,7 @@ ruu="$toolsdir/$HOST/bin/RUU_Decrypt_Tool"
 
 romzip="$(realpath $1)"
 romzipext="${romzip##*.}"
-PARTITIONS="system vendor cust odm oem factory product xrom modem dtbo boot recovery tz systemex oppo_product preload_common system_ext system_other opproduct reserve india my_preload my_odm my_stock my_operator my_country my_product my_company my_engineering my_heytap"
+PARTITIONS="boot dtbo modem my_carrier.00011011 my_company my_engineering my_heytap.00011011 my_manifest.00011011 my_preload.00011011 my_product my_region.00011011 my_stock.00011011 odm product system_ext system vendor"
 EXT4PARTITIONS="system vendor cust odm oem factory product xrom systemex oppo_product preload_common"
 OTHERPARTITIONS="tz.mbn:tz tz.img:tz modem.img:modem NON-HLOS:modem boot-verified.img:boot dtbo-verified.img:dtbo"
 
@@ -185,11 +185,7 @@ if [[ $(7z l -ba "$romzip" | grep system.new.dat) ]]; then
             rm -rf $partition.new.dat.{0..999}
         fi
         ls | grep "\.new\.dat" | while read i; do
-            line=$(echo "$i" | cut -d"." -f1)
-            if [[ $(echo "$i" | grep "\.dat\.xz") ]]; then
-                7z e -y "$i" 2>/dev/null >> $tmpdir/zip.log
-                rm -rf "$i"
-            fi
+            line=$partition
             if [[ $(echo "$i" | grep "\.dat\.br") ]]; then
                 echo "Converting brotli $partition dat to normal"
                 brotli -d "$i"
